@@ -15,22 +15,20 @@ function App() {
   useEffect(() => {
     var event = JSONStoreGet("event");
 
+    var buttonsNum = event.buttonsNum;
     
-    if(!event.buttonNum){
-      event.buttonNum = 0;
+    if(!buttonsNum){
+      buttonsNum = 0;
     }
-    var accept = event.buttonNum & 1;
-    var maybe = event.buttonNum & 2;
-    var decline = event.buttonNum & 4;
+    var accept = buttonsNum & 1;
+    var maybe = buttonsNum & 2;
+    var decline = buttonsNum & 4;
 
     event.buttons = {accept:accept > 0,maybe:maybe>0,decline:decline>0 }
     setRsvpEvent(event);
-    setRsvpGuest(JSONStoreGet("guest"));
+    setRsvpGuest(JSONStoreGet("guest"));    
 
-    
-
-  }
-    , [])
+  } , [])
 
 
 
