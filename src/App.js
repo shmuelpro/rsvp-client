@@ -177,7 +177,7 @@ function App() {
                   <div className="columns" >
                     <div className="column">
                       {errors.map((e,i)=>{
-                        return <div key={i}>{e}</div>
+                        return <div style={{color:"red"}} key={i}>{e}</div>
                       })}
                     </div>
                   </div>
