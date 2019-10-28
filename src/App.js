@@ -11,7 +11,7 @@ function App() {
 
 
   const [rsvpEvent, setRsvpEvent] = useState({});
-  const [rsvpGuest, setRsvpGuest] = useState({ name: "Jon", email: "jon@sommplace.com", selectedDate: "Jan 1st 2019", state: 0 });
+  const [rsvpGuest, setRsvpGuest] = useState({  state: 0 });
   const [selectionDisplayColor, setSelectionDisplayColor] = useState("is-info");
   const [selectionDisplayText, setSelectionDisplayText] = useState("is-info");
   const [guestName, setGuestName] = useState(rsvpGuest.name || "");
@@ -75,7 +75,10 @@ function App() {
 
 
 
-
+useEffect(()=>{
+ setGuestName(rsvpGuest.name)
+ setGuestEmail(rsvpGuest.email)
+},[rsvpGuest])
 
 
 
