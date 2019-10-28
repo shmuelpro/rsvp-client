@@ -82,6 +82,17 @@ function getButtonState(button){
   return (
     <div className="App">
       <RSVPNav />
+        <section className="hero is-light">
+        <div className="hero-body">
+          <div className="container">
+            <div className="columns">
+              <div style={{display:getButtonState("accept")}} className="column"><button onClick={() => { changeSelection(1) }} className="button is-success is-large is-fullwidth">Accept</button></div>
+              <div style={{display:getButtonState("maybe")}} className="column"><button onClick={() => { changeSelection(2) }} className="button is-warning is-large is-fullwidth">Maybe</button></div>
+              <div style={{display:getButtonState("decline")}} className="column"><button onClick={() => { changeSelection(3) }} className="button is-danger is-large is-fullwidth">Decline</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
       <section className={`hero ${selectionDisplayColor}`}>
         <div className="hero-body">
           <div className="container">
@@ -104,17 +115,7 @@ function getButtonState(button){
 
         </div>
       </section>
-      <section className="hero is-light">
-        <div className="hero-body">
-          <div className="container">
-            <div className="columns">
-              <div style={{display:getButtonState("accept")}} className="column"><button onClick={() => { changeSelection(1) }} className="button is-success is-large is-fullwidth">Accept</button></div>
-              <div style={{display:getButtonState("maybe")}} className="column"><button onClick={() => { changeSelection(2) }} className="button is-warning is-large is-fullwidth">Maybe</button></div>
-              <div style={{display:getButtonState("decline")}} className="column"><button onClick={() => { changeSelection(3) }} className="button is-danger is-large is-fullwidth">Decline</button></div>
-            </div>
-          </div>
-        </div>
-      </section>
+    
     </div>
   );
 }
