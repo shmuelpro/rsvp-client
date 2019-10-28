@@ -11,13 +11,14 @@ function App() {
 
 
   const [rsvpEvent, setRsvpEvent] = useState({});
-  const [rsvpGuest, setRsvpGuest] = useState({  state: 0 });
+  const [rsvpGuest, setRsvpGuest] = useState({ state: 0 });
   const [selectionDisplayColor, setSelectionDisplayColor] = useState("is-info");
   const [selectionDisplayText, setSelectionDisplayText] = useState("is-info");
   const [guestName, setGuestName] = useState(rsvpGuest.name || "");
   const [guestEmail, setGuestEmail] = useState(rsvpGuest.email || "");
+  const [errors, setErrors] = useState([]);
 
-  const [submitButton, setSubmitButton] = useState(<button onClick={() => { sumbitChange() }} className="button has-background-link has-text-white is-fullwidth">Submit</button>)
+  const [submitButtonState, setSubmitButtonState] = useState("NOT_SUBMITTED")
 
 
   useEffect(() => {
@@ -33,6 +34,7 @@ function App() {
     var decline = buttonsNum & 4;
 
     event.buttons = { accept: accept > 0, maybe: maybe > 0, decline: decline > 0 }
+
     setRsvpEvent(event);
     setRsvpGuest(JSONStoreGet("guest"));
 
@@ -60,14 +62,35 @@ function App() {
 
   }
 
-  function sumbitChange() {
 
-    setSubmitButton(<button className="button has-background-primary has-text-white is-fullwidth">Submitting...</button>)
 
-    updateSelectionRemote({ email: rsvpGuest.email, state: rsvpGuest.state, eventid: rsvpEvent.id, name: rsvpGuest.name }).then(() => {
-      setSubmitButton(<button className="button has-background-info has-text-white is-fullwidth">Done!</button>)
+  function submitChange() {
+
+    var cerrors = [];
+    if (!rsvpGuest.state) {
+      cerrors.push("Please select an option. Are you coming?");
+
+    }
+    if (!validateEmail(guestEmail)) {
+      cerrors.push("Please enter a valid email address");
+    }
+    console.log(guestName)
+    if (!guestName) {
+      cerrors.push("Please enter a name");
+    }
+    if (cerrors.length > 0) {
+      setErrors(cerrors)
+      return;
+    }
+    setErrors([ ])
+    setSubmitButtonState("SUBMITTING");
+    var send = { email: guestEmail, state: rsvpGuest.state, eventid: rsvpEvent.id, name: guestName };
+    console.log(send)
+    updateSelectionRemote(send).then((response) => {
+      console.log(response)
+      setSubmitButtonState("DONE")
     }).catch((error) => {
-      setSubmitButton(<button className="button has-background-danger has-text-white is-fullwidth">Error</button>)
+      setSubmitButtonState("ERROR")
       console.log(error)
     })
   }
@@ -75,10 +98,10 @@ function App() {
 
 
 
-useEffect(()=>{
- setGuestName(rsvpGuest.name)
- setGuestEmail(rsvpGuest.email)
-},[rsvpGuest])
+  useEffect(() => {
+    setGuestName(rsvpGuest.name)
+    setGuestEmail(rsvpGuest.email)
+  }, [rsvpGuest])
 
 
 
@@ -135,15 +158,28 @@ useEffect(()=>{
               </div>
             </section>
           </div>
-          <div className="column" style={{ padding: 0,display:rsvpEvent.editable?"flex":"none" }}>
+          <div className="column" style={{ padding: 0, display: rsvpEvent.editable ? "block" : "none" }}>
             <section className="is-light">
               <div className="hero-body">
                 <div className="container">
                   <div className="columns" style={{ alignItems: "flex-end" }}>
                     <div className="column"> Name: <input className="input" value={guestName} onChange={(e) => { setGuestName(e.target.value) }} type="text" placeholder="Full Name" /></div>
                     <div className="column"> Email: <input className="input" value={guestEmail} onChange={(e) => { setGuestEmail(e.target.value) }} type="text" placeholder="Email Address" /></div>
-                    <div className="column"> {submitButton}</div>
+                    <div className="column">
+                      {submitButtonState === "NOT_SUBMITTED" && <button onClick={() => { submitChange() }} className="button has-background-link has-text-white is-fullwidth">Submit</button>}
+                      {submitButtonState === "SUBMITTING" && <button className="button has-background-primary has-text-white is-fullwidth">Submitting...</button>}
+                      {submitButtonState === "DONE" && <button className="button has-background-info has-text-white is-fullwidth">Done!</button>}
+                      {submitButtonState === "ERROR" && <button className="button has-background-danger has-text-white is-fullwidth">Error</button>}
 
+                    </div>
+
+                  </div>
+                  <div className="columns" >
+                    <div className="column">
+                      {errors.map((e,i)=>{
+                        return <div key={i}>{e}</div>
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -170,11 +206,11 @@ useEffect(()=>{
 
         </div>
       </section>
-      <footer class="footer">
-        <div class="content has-text-centered">
+      <footer className="footer">
+        <div className="content has-text-centered">
           <p>
             <strong>SIGNAL RSVP</strong> <small>{rsvpEvent.name}</small> - <small>{rsvpEvent.date}</small>
-    </p>
+          </p>
         </div>
       </footer>
     </div>
