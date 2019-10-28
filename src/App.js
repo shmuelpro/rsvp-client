@@ -132,7 +132,7 @@ function App() {
               </div>
             </section>
           </div>
-          <div className="column" style={{ padding: 0 }}>
+          <div className="column" style={{ padding: 0,display:rsvpEvent.editable?"flex":"none" }}>
             <section className="is-light">
               <div className="hero-body">
                 <div className="container">
